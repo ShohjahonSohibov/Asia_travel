@@ -4,6 +4,13 @@ const cors = require('cors');
 const helmet = require('helmet');
 
 const connectDB = require('../config/db');
+const hotelRoutes = require("../routes/hotelRoutes")
+const bannerRoutes = require("../routes/bannerRoutes")
+const destinationRoutes = require("../routes/destinationRoutes")
+const reviewsRoutes = require("../routes/reviewsRoutes")
+const roomsRoutes = require("../routes/roomsRoutes")
+const tourProgramRoutes = require("../routes/tourProgramRoutes")
+const tourRoutes = require("../routes/tourRoutes")
 
 connectDB();
 const app = express();
@@ -18,6 +25,15 @@ app.use(cors());
 app.get('/', (req, res) => {
   res.send('App works properly!');
 });
+
+//this for route will need for store front, also for admin dashboard
+app.use('/api/v1/hotel/', hotelRoutes);
+app.use('/api/v1/banner/', bannerRoutes);
+app.use('/api/v1/destination/', destinationRoutes);
+app.use('/api/v1/review/', reviewsRoutes);
+app.use('/api/v1/room/', roomsRoutes);
+app.use('/api/v1/tour-program/', tourProgramRoutes);
+app.use('/api/v1/tour/', tourRoutes);
 
 app.use((err, req, res, next) => {
     if (res.headersSent) return next(err);

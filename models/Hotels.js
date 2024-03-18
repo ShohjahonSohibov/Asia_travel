@@ -1,16 +1,17 @@
 const mongoose = require("mongoose");
-var skipEmpty = require("mongoose-skip-empty");
-var fns_format = require("date-fns/format");
+let skipEmpty = require("mongoose-skip-empty");
+const { format } = require("date-fns");
+
 const { v4 } = require("uuid");
 
-const hotelSchema = new mongoose.Schema(
+const HotelSchema = new mongoose.Schema(
   {
-    _id: {
+    id: {
       type: String,
       default: v4,
     },
     name: {
-      type: String,
+      type: mongoose.Schema.Types.Mixed,
       required: true,
     },
     images: {
@@ -20,26 +21,23 @@ const hotelSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    amenities: {
-      type: mongoose.Schema.Types.Mixed,
-    },
-    information: {
+    description: {
       type: mongoose.Schema.Types.Mixed,
     },
     location: {
-      type: String,
+      type: mongoose.Schema.Types.Mixed,
     },
     location_map: {
       type: String,
     },
     politics: {
-      type: String,
+      type: mongoose.Schema.Types.Mixed,
     },
     status: {
-        type: String,
-        default: "active",
-        index: true,
-        enum: ['active', 'inactive'],
+      type: String,
+      default: "active",
+      index: true,
+      enum: ["active", "inactive"],
     },
     created_at: {
       type: String,
@@ -56,23 +54,22 @@ const hotelSchema = new mongoose.Schema(
   }
 );
 
-AttributeSchema.pre("save", function (next) {
+HotelSchema.pre("save", function (next) {
   now = new Date();
-  now_string = fns_format(now, "dd.MM.yyyy HH:mm");
-  this.updated_at = fns_format(now, "dd.MM.yyyy HH:mm");
+  now_string = format(now, "dd.MM.yyyy HH:mm");
+  this.updated_at = format(now, "dd.MM.yyyy HH:mm");
 
   if (!this.created_at) {
-    this.created_at = fns_format(now, "dd.MM.yyyy HH:mm");
+    this.created_at = format(now, "dd.MM.yyyy HH:mm");
   }
 
   next();
 });
 
-AttributeSchema.pre("updateOne", function (next) {
-  now = new Date();
-  this.update({ updated_at: fns_format(now, "dd.MM.yyyy HH:mm") });
-
+HotelSchema.pre("updateOne", function (next) {
+  const now = new Date();
+  this.set({ updated_at: format(now, "dd.MM.yyyy HH:mm") });
   next();
 });
 
-module.exports = mongoose.model("Hotel", hotelSchema);
+module.exports = mongoose.model("Hotel", HotelSchema);
